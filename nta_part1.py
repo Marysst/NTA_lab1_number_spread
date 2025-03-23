@@ -75,6 +75,25 @@ def trial_division(n, limit=1000):
 def f(x, n):
     return (x * x + 1) % n
 
+def pollard_rho(n):
+    if n % 2 == 0:
+        return 2  
+
+    for _ in range(5):  
+        x = random.randint(2, n - 1)
+        y = x
+        d = 1
+
+        while d == 1:
+            x = f(x, n)
+            y = f(f(y, n), n)
+            d = gcd(abs(x - y), n)
+
+        if 1 < d < n:
+            return d  
+
+    return None 
+    
 n = 691534156424661573  
 k = 10  
 
