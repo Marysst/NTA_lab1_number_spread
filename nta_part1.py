@@ -93,9 +93,33 @@ def pollard_rho(n):
             return d  
 
     return None 
+
+def full_pollard_factorization(n):
+    factors = []
+
+    def factorize(n):
+        if n <= 1:
+            return
+        if solovay_strassen(n, 10):  
+            factors.append(n)
+            return
+        
+        divisor = None
+        while not divisor:  
+            divisor = pollard_rho(n)
+            if divisor is None:
+                print(f"Метод Полларда не зміг знайти дільник для {n}")
+                return
+        
+        factors.append(divisor)
+        factorize(n // divisor) 
+
+    factorize(n)
+    return sorted(factors)
     
 n = 691534156424661573  
 k = 10  
 
 print(f"Число {n} {'ймовірно просте' if solovay_strassen(n, k) else 'складене'}")
 print(f"Факторизація методом пробних ділень: {trial_division(n, limit=100)}")
+print(f"Факторизація методом Полларда: {full_pollard_factorization(n)}")
