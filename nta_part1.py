@@ -71,3 +71,10 @@ def trial_division(n, limit=1000):
         factors.append(n)  
 
     return factors
+
+
+n = 691534156424661573  
+k = 10  
+
+print(f"Число {n} {'ймовірно просте' if solovay_strassen(n, k) else 'складене'}")
+print(f"Факторизація методом пробних ділень: {trial_division(n, limit=100)}")
