@@ -72,6 +72,8 @@ def trial_division(n, limit=1000):
 
     return factors
 
+def f(x, n):
+    return (x * x + 1) % n
 
 n = 691534156424661573  
 k = 10  
