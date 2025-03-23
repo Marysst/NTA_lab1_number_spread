@@ -52,3 +52,22 @@ def sieve(limit):
             for multiple in range(num * num, limit + 1, num):
                 is_prime[multiple] = False
     return primes
+
+def trial_division(n, limit=1000):
+    if n < 2:
+        return []
+    
+    primes = sieve(limit)
+    factors = []
+
+    for p in primes:
+        if p * p > n:
+            break
+        while n % p == 0:
+            factors.append(p)
+            n //= p
+
+    if n > 1:
+        factors.append(n)  
+
+    return factors
