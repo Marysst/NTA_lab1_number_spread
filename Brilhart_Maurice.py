@@ -94,3 +94,19 @@ def gauss_elimination_F2(A):
         solutions.append(solution)
     print("Gaussian elimination solutions:", solutions)
     return solutions
+
+def compute_xy(zero_sums, relations, n):
+    for i in zero_sums:
+        x = y = 1
+        count = 0
+        for j in i:
+            if j == 1:
+                x *= relations[count][0]
+                y *= relations[count][1]
+            count += 1
+        x = x % n
+        root, exact = sympy.integer_nthroot(y, 2)
+        if exact:
+            return x, root
+    print("No valid x, y found")
+    return None, None
