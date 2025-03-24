@@ -251,12 +251,14 @@ def canonical_factorization(n):
         divisor = trial_division(n)
         if len(divisor) > 1:
             for i in range(len(divisor) - 1):
+                print(f"Дільник знайдено методом пробних ділень: {divisor[i]}")
                 result.append(divisor[i])
                 n //= divisor[i]
             return factorize(n)
         
         divisor = pollard_rho(n)
         if divisor:
+            print(f"Дільник знайдено ро-методомом Поларда: {divisor}")
             result.append(divisor)
             n //= divisor
             if solovay_strassen(n, 10):
@@ -266,8 +268,12 @@ def canonical_factorization(n):
         divisor1, divisor2 = drillhart_morrison(n)
         if divisor1 and divisor2:
             if divisor1 == 1 or divisor2 == 1:
+                print("Я не можу знайти канонічний розклад числа :(")
+                print(f"Факторна база виявилась замалою у методі Брілхарта Моріса.")
+                print("Я міг би змінити значення альфа і розширити факторну базу, але на цьому пристрої з більшою факторною базою я працюватимо занадто довго :( Sorry")
                 result.extend([divisor1, divisor2])
                 return False
+            print(f"Дільники знайдено методом Брілхарта Моріса: {divisor1, divisor2}")
             result.extend([divisor1, divisor2])
             return True
         
@@ -278,4 +284,3 @@ def canonical_factorization(n):
         print(f"Канонічний розклад: {result}")
     else:
         print(f"Я знайшов такі дільники: {result}")
-        
