@@ -141,3 +141,17 @@ def quadratic_sieve(n, base_size, sieve_range, threshold):
 
     print("Не вдалося знайти нетривіальну факторизацію.")
     return None
+
+def estimate_parameters(n):
+    """Оцінює оптимальні параметри для квадратичного сита."""
+    if n <= 0:
+        raise ValueError("Число повинно бути додатним.")
+    
+    log_n = math.log(n)
+    log_log_n = math.log(log_n)
+
+    base_size = max(20, round(math.exp(0.3 * math.sqrt(log_n * log_log_n))))
+    sieve_range = max(50, base_size * 2)
+    threshold = max(5, round(log_n / 3, 2))
+    
+    return base_size, sieve_range, threshold
