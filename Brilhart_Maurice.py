@@ -45,7 +45,6 @@ def find_smooth_relations(n, factor_base):
     a = u
 
     b_1, b_2 = b_2, (a * b_2 + b_1) % n
-    print(b_1, b_2)
     process_b_value(b_2, n, factor_base, b_values, relations)
     
     while len(relations) < needed_relations:
@@ -92,7 +91,6 @@ def gauss_elimination_F2(A):
             if pivot_col < n:
                 solution[pivot_col] = A[row, free_var]
         solutions.append(solution)
-    print("Gaussian elimination solutions:", solutions)
     return solutions
 
 def compute_xy(zero_sums, relations, n):
@@ -125,3 +123,8 @@ def drillhart_morrison(n):
     r1 = sympy.gcd(int(x + y), n)
     r2 = sympy.gcd(int(x - y), n)
     return r1, r2
+
+if __name__ == "__main__":
+    n = 9073
+    res = drillhart_morrison(n)
+    print(n, "=", res[0], "*", res[1])
