@@ -34,3 +34,25 @@ def process_b_value(b_2, n, factor_base, b_values, relations):
     if b2 == 1 and b_2 not in b_values:
         relations.append((b_2, original_b2, factorization))
         b_values.add(b_2)
+
+def find_smooth_relations(n, factor_base):
+    terms = []
+    relations = []
+    needed_relations = len(factor_base) + 1  
+    b_values = set()
+    b_2, b_1 = 1, 0
+    v, u = 1, int(math.sqrt(n))
+    a = u
+
+    b_1, b_2 = b_2, (a * b_2 + b_1) % n
+    print(b_1, b_2)
+    process_b_value(b_2, n, factor_base, b_values, relations)
+    
+    while len(relations) < needed_relations:
+        terms.append(a)
+        v = (n - u ** 2) // v
+        a = (int(math.sqrt(n)) + u) // v
+        u = a * v - u
+        b_1, b_2 = b_2, (a * b_2 + b_1) % n
+        process_b_value(b_2, n, factor_base, b_values, relations)
+    return relations
