@@ -239,3 +239,43 @@ def drillhart_morrison(n):
     r1 = sympy.gcd(int(x + y), n)
     r2 = sympy.gcd(int(x - y), n)
     return r1, r2
+
+def canonical_factorization(n):
+    result = []
+    
+    def factorize(n):
+        if solovay_strassen(n, 10):
+            result.append(n)
+            return True
+        
+        divisor = trial_division(n)
+        if len(divisor) > 1:
+            for i in range(len(divisor) - 1):
+                result.append(divisor[i])
+                n //= divisor[i]
+            return factorize(n)
+        
+        divisor = pollard_rho(n)
+        if divisor:
+            result.append(divisor)
+            n //= divisor
+            if solovay_strassen(n, 10):
+                result.append(n)
+                return True
+        
+        divisor1, divisor2 = drillhart_morrison(n)
+        if divisor1 and divisor2:
+            if divisor1 == 1 or divisor2 == 1:
+                result.extend([divisor1, divisor2])
+                return False
+            result.extend([divisor1, divisor2])
+            return True
+        
+        print("Я не можу знайти канонічний розклад числа :(")
+        return False
+    
+    if factorize(n):
+        print(f"Канонічний розклад: {result}")
+    else:
+        print(f"Я знайшов такі дільники: {result}")
+        
