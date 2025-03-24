@@ -110,3 +110,18 @@ def compute_xy(zero_sums, relations, n):
             return x, root
     print("No valid x, y found")
     return None, None
+
+def drillhart_morrison(n):
+    factor_base = build_factor_base(n)
+    relations = find_smooth_relations(n, factor_base)
+    A = np.array([r[2] for r in relations])
+    zero_sums = gauss_elimination_F2(A)
+    x, y = compute_xy(zero_sums, relations, n)
+    
+    if x is None or y is None:
+        print("Factorization failed")
+        return None, None
+    
+    r1 = sympy.gcd(int(x + y), n)
+    r2 = sympy.gcd(int(x - y), n)
+    return r1, r2
