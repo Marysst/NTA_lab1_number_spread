@@ -1,6 +1,6 @@
-import math, random, itertools
+import math, itertools
 import numpy as np
-from sympy import gcd, isprime, prime, Matrix, legendre_symbol, log
+from sympy import gcd, isprime, prime, legendre_symbol, log
 
 def gauss_elimination_F2(A):
     A = A.T
@@ -114,7 +114,6 @@ def quadratic_sieve(n, base_size, sieve_range, threshold):
         return None
 
     A = np.array([r[2] for r in relations])
-    print(A)
     zero_sums = gauss_elimination_F2(A)
 
     if not zero_sums:
@@ -129,12 +128,12 @@ def quadratic_sieve(n, base_size, sieve_range, threshold):
             if j == 1:
                 x *= relations[system_number][0]
                 y *= relations[system_number][1]
-
+        y = math.sqrt(y)
         if (x + y) % n == 0 or (x - y) % n == 0:
             continue
 
-        factor_1 = gcd(x + y, n)
-        factor_2 = gcd(x - y, n)
+        factor_1 = gcd(int(x + y), n)
+        factor_2 = gcd(int(x - y), n)
 
         print("Успіх! Знайдені фактори:", factor_1, factor_2)
         return factor_1, factor_2
@@ -150,8 +149,15 @@ def estimate_parameters(n):
     log_n = math.log(n)
     log_log_n = math.log(log_n)
 
-    base_size = max(20, round(math.exp(0.3 * math.sqrt(log_n * log_log_n))))
-    sieve_range = max(50, base_size * 2)
-    threshold = max(5, round(log_n / 3, 2))
+    base_size = round(math.exp(math.sqrt(log_n * log_log_n)))
+    sieve_range = base_size * 2
+    threshold = round(log_n / 3, 2)
     
     return base_size, sieve_range, threshold
+
+# Тестовий виклик
+n = 91
+print("n=", n)
+base_size, sieve_range, threshold = estimate_parameters(n)
+print("base_size:", base_size, "sieve_range:", sieve_range, "threshold:", threshold)
+quadratic_sieve(n, base_size, sieve_range, threshold)
