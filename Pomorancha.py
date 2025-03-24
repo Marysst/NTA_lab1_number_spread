@@ -53,3 +53,91 @@ def gauss_elimination_F2(A):
         solutions.append(solution)
     
     return solutions
+
+def quadratic_sieve(n, base_size, sieve_range, threshold):
+    """ Реалізація квадратичного сита з обробкою помилок """
+    
+    if isprime(n):
+        print("Помилка: число є простим, факторизація неможлива.")
+        return None
+
+    factor_base = [-1]
+    for i in itertools.count(start=1, step=1):
+        p = prime(i)
+        if (p == 2 and n % 2 == 1) or (p != 2 and legendre_symbol(n, p) == 1):
+            factor_base.append(p)
+        if len(factor_base) == base_size:
+            break
+    
+    if len(factor_base) < 2:
+        print("Помилка: недостатньо чисел у факторній базі.")
+        return None
+
+    m = math.isqrt(n)
+    factor_base_roots = {}
+    for p in factor_base:
+        if p > 0:
+            for x in range(-sieve_range, sieve_range + 1):
+                if (x + m) ** 2 % p == n % p:
+                    if x in factor_base_roots.keys():
+                        factor_base_roots[x].append(p)
+                    else:
+                        factor_base_roots[x] = [p]
+
+    relations = []
+    for x in range(-sieve_range, sieve_range + 1):
+        a = x + m
+        b = a ** 2 - n
+        lg = log(abs(b), 10)
+        that_we_subtract = sum(log(i, 10) for i in factor_base_roots.get(x, []))
+        difference = lg - that_we_subtract
+
+        if difference <= threshold:
+            factorization = []
+            original_b = b
+            for p in factor_base:
+                count = 0
+                if p == -1:
+                    if b < 0:
+                        b //= p
+                        count += 1
+                else:
+                    while b % p == 0:
+                        b //= p
+                        count += 1
+                factorization.append(count % 2)
+            if b == 1:
+                relations.append((a, original_b, factorization))
+
+    if not relations:
+        print("Помилка: не знайдено жодного В-числа.")
+        return None
+
+    A = np.array([r[2] for r in relations])
+    print(A)
+    zero_sums = gauss_elimination_F2(A)
+
+    if not zero_sums:
+        print("Помилка: не знайдено жодної лінійної залежності.")
+        return None
+
+    for solution_system in zero_sums:
+        x = y = 1
+        system_number = -1
+        for j in solution_system:
+            system_number += 1
+            if j == 1:
+                x *= relations[system_number][0]
+                y *= relations[system_number][1]
+
+        if (x + y) % n == 0 or (x - y) % n == 0:
+            continue
+
+        factor_1 = gcd(x + y, n)
+        factor_2 = gcd(x - y, n)
+
+        print("Успіх! Знайдені фактори:", factor_1, factor_2)
+        return factor_1, factor_2
+
+    print("Не вдалося знайти нетривіальну факторизацію.")
+    return None
