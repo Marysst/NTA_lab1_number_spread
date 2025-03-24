@@ -287,3 +287,12 @@ def canonical_factorization(n):
     else:
         print(f"Я знайшов такі дільники: {result}")
     print(f"Час роботи: {time.time() - start_time} секунд")
+
+#Приклади використання
+n = 691534156424661573
+print("n=", n)
+canonical_factorization(n)
+
+n = 1515475730401555091
+print("n=", n)
+canonical_factorization(n)
