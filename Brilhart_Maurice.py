@@ -56,3 +56,41 @@ def find_smooth_relations(n, factor_base):
         b_1, b_2 = b_2, (a * b_2 + b_1) % n
         process_b_value(b_2, n, factor_base, b_values, relations)
     return relations
+
+def gauss_elimination_F2(A):
+    A = A.T
+    m, n = A.shape
+    cur_row = 0
+    free_variables = []
+    
+    for col in range(n):
+        pivot_row = -1
+        for row in range(cur_row, m):
+            if A[row, col] == 1:
+                pivot_row = row
+                break
+        
+        if pivot_row == -1:
+            free_variables.append(col)
+            continue
+        
+        if pivot_row != cur_row:
+            A[[cur_row, pivot_row]] = A[[pivot_row, cur_row]]
+        
+        for row in range(m):
+            if row != cur_row and A[row, col] == 1:
+                A[row] ^= A[cur_row]
+        
+        cur_row += 1
+    
+    solutions = []
+    for free_var in free_variables:
+        solution = np.zeros(n, dtype=int)
+        solution[free_var] = 1
+        for row in range(cur_row):
+            pivot_col = np.argmax(A[row])
+            if pivot_col < n:
+                solution[pivot_col] = A[row, free_var]
+        solutions.append(solution)
+    print("Gaussian elimination solutions:", solutions)
+    return solutions
